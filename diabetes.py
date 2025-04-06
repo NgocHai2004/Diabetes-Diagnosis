@@ -19,7 +19,7 @@ class diabetes:
         self.y = y
 
     # chia dữ liệu train , test
-    def split_date(self):
+    def split_data(self):
         x_train , x_test, y_train, y_test=train_test_split(self.x,self.y,test_size=0.2,random_state=42)
         return x_train, x_test, y_train, y_test
     
@@ -63,6 +63,6 @@ target = "Outcome"
 x = data.drop(target,axis=1)
 y = data[target]      
 dia = diabetes(x,y) 
-dia.split_date()
+dia.split_data()
 dia.select_model()
 dia.use_model()
