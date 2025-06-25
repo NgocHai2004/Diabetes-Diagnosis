@@ -1,13 +1,14 @@
 import pandas as pd
 import seaborn as sb
 import matplotlib.pyplot as plt
-from ydata_profiling import ProfileReport
+# from ydata_profiling import ProfileReport
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import classification_report
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis 
 from lazypredict.Supervised import LazyClassifier
+import joblib
 
 data = pd.read_csv("diabetes.csv")
 # data = ProfileReport(data,title = "Profiling Report")  
@@ -24,11 +25,11 @@ class Diabete:
         return x_train, x_test, y_train, y_test
     
     # chọn xem dùng model nào sau khi chia tệp dữ liệu xong
-    def select_model(self):
-        x_train , x_test, y_train, y_test = self.split_data()
-        select = LazyClassifier(verbose=0,ignore_warnings=True,custom_metric=None)
-        model,predictions = select.fit(x_train, x_test, y_train, y_test)
-        print(pd.DataFrame(model).sort_values(by="Accuracy",ascending=False))
+    # def select_model(self):
+    #     x_train , x_test, y_train, y_test = self.split_data()
+    #     select = LazyClassifier(verbose=0,ignore_warnings=True,custom_metric=None)
+    #     model,predictions = select.fit(x_train, x_test, y_train, y_test)
+    #     print(pd.DataFrame(model).sort_values(by="Accuracy",ascending=False))
 
     # chọn QuadraticDiscriminantAnalysis vì đứng đầu kết quả về recall:
     def use_model(self):
@@ -55,8 +56,9 @@ class Diabete:
         print("Best Index: ", gsv.best_index_)
         model = QuadraticDiscriminantAnalysis(priors=[0.25, 0.75],reg_param=0.1)
         model.fit(x_train,y_train)
-        y_pred=model.predict(x_test)
-        print(classification_report(y_test,y_pred))
+        # y_pred=model.predict(x_test)
+        # print(classification_report())  
+        joblib.dump(model, "diabetes_model.pkl")  
 
 # Dùng OOP
 def main():
@@ -65,7 +67,7 @@ def main():
     y = data[target]  
     dia = Diabete(x,y) 
     dia.split_data()
-    dia.select_model()
+    # dia.select_model()
     dia.use_model()
 
 main()
